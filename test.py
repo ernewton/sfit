@@ -6,6 +6,7 @@ import sys
 import math
 import numpy
 import sfit
+import pandas as pd
 
 import matplotlib.pyplot as plt
 import matplotlib.gridspec
@@ -302,4 +303,19 @@ for ilc, lc in enumerate(buf):
     axw.set_ylabel("Window function")
     
     plt.tight_layout()
-    plt.show()
+    plt.savefig(lcfile[:-4]+'_fit.png')
+
+
+    # write out data
+    d = {'time':t+bjdbase, 'ycorr':ycorr, 'yerr':yerr}
+    dfout = pd.DataFrame(data=d)
+
+    f = open(lcfile[:-4]+'_fitted.csv', 'w')
+    f.write('# P (d) = '+ str(pbest) +'\n')
+    f.write('# amp (mag) = '+ str(amp) +'\n')
+    f.write('# e_amp (mag) = ' + str(e_amp) + '\n')
+    f.write('# T0 (d) = '+ str(t0) +'\n')
+
+    dfout.to_csv(f, index=False)
+    f.close()
+    
